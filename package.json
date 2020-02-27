@@ -1,0 +1,18 @@
+{
+  "name": "node-red-contrib-digitalarsenal-cluster",
+  "version": "0.1.0-alpha.1",
+  "license": "SEE LICENSE IN cluster.html",
+  "description": "",
+  "main": "cluster.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "rollup": "rollup -c rollup.config.js",
+    "build": "npm run rollup"
+  },
+  "node-red": {
+    "nodes": {
+      "cluster": "cluster.js"
+    }
+  },
+  "author": "digitalarsenal.io"
+}

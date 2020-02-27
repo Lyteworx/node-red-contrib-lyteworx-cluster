@@ -1,0 +1,112 @@
+<!--
+
+@license CC BY-NC 3.0 US
+Copyright DigitalArsenal.IO, Inc., Lyteworx LLC.
+ALL RIGHTS RESERVED.
+ 
+-->
+
+<script type="text/x-red" data-template-name="cluster">
+  <div class="form-row" id="cluster-input-mode">
+    <select id="strategies">
+     
+     
+    </select>
+    <br />
+  </div>
+  <!--<div class="form-row">
+      <input type="checkbox" id="node-input-bingoOnly" placeholder="" style="display: inline-block; width: auto; vertical-align: top;">
+      <label for="node-input-bingoOnly" style="width: 70%;"><span>Run on Bingo Process Only</span></label>
+  </div>-->
+  <div class="form-row">
+      <input type="checkbox" id="node-input-payloadOnly" placeholder="" style="display: inline-block; width: auto; vertical-align: top;">
+      <label for="node-input-payloadOnly" style="width: 70%;"><span>Transmit Payload Only</span></label>
+  </div>
+</script>
+<style>
+</style>
+<script type="text/x-red" data-help-name="cluster">
+  <p>Cluster Node For Distributed Computing</p>
+   This node takes an input from one to many processes and distributes it across one to many processes.</br>
+   
+   <h3>Outputs</h3>
+       <dl class="message-properties">
+       <dt>payload
+           <span class="property-type">string | buffer</span>
+       </dt>
+       </dl>
+   <h3>Details</h3>
+   <p>By default, Union-Station clusters the underlying Node-RED runtime.</p>
+   <p>The flows run on the configured number of processors, one process per processor.</p>
+   <p>To use parallel processing of tasks (more than one processor per flow),</p>
+   <p>this cluster node is available to configure interprocess communication (IPC).</p>
+</script>
+
+<script type="text/javascript">
+  /*  
+   * List of strategies
+   * - master:randomWorker
+   * - master:getSpecificWorker
+   * - master:roundRobin
+   * - master:broadcast
+   */
+
+  RED.nodes.registerType('cluster', {
+    category: 'advanced',
+    color: "#E9967A",
+    defaults: {
+      mode: {
+        value: "randomWorker"
+      },
+      /*bingoOnly: {
+        value: true
+      },*/
+      payloadOnly: {
+        value: true
+      }
+    },
+    icon: "cluster.png",
+    inputs: 1,
+    outputs: 1,
+    outputLabels: function (index) {},
+    label: function () {
+      return `cluster: ${this.mode}`;
+    },
+    labelStyle: function () {
+      return this.name ? "node_label_italic" : "";
+    },
+    oneditprepare: function () {
+      let node = this;
+      node.strategies = ['randomWorker', 'sendToBingo', 'runOnBingo', 'broadcast', 'roundRobin'];
+      let setStrategies = (strategies) => {
+        if (strategies) {
+          node.strategies = strategies;
+        }
+        node.strategies.forEach(s => {
+          $('#strategies').append(`
+          <option ${this.mode === s?'selected="selected"':''} value="${s}">${s}</option>
+          `);
+        })
+      };
+      if (!this.strategies) {
+        $.get(window.location.pathname + '6660d4cd-cc89-4f2a-a20b-1ff66353d26b').then(function (strategies) {
+          setStrategies(strategies);
+        });
+      } else {
+        setStrategies();
+      }
+      $("#strategies").val(this.mode);
+      $("#strategies").change(function () {
+        if (this.value === 'getSpecificWorker') {
+
+        } else {
+
+        }
+        console.log(this.value)
+      })
+    },
+    oneditsave: function () {
+      this.mode = $("#strategies").val();
+    }
+  });
+</script>
