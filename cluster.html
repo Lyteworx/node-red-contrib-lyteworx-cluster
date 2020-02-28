@@ -8,14 +8,11 @@ ALL RIGHTS RESERVED.
 
 <script type="text/x-red" data-template-name="cluster">
   <div class="form-row" id="cluster-input-mode">
+    <label for="node-config-input-strategy" style="width:50%""><i class="fa fa-th-list"></i> Distribution Strategy</label>
     <select id="strategies">
     </select>
     <br />
   </div>
-  <!--<div class="form-row">
-      <input type="checkbox" id="node-input-bingoOnly" placeholder="" style="display: inline-block; width: auto; vertical-align: top;">
-      <label for="node-input-bingoOnly" style="width: 70%;"><span>Run on Bingo Process Only</span></label>
-  </div>-->
   <div class="form-row">
       <input type="checkbox" id="node-input-payloadOnly" placeholder="" style="display: inline-block; width: auto; vertical-align: top;">
       <label for="node-input-payloadOnly" style="width: 70%;"><span>Transmit Payload Only</span></label>
@@ -25,16 +22,30 @@ ALL RIGHTS RESERVED.
 </style>
 <script type="text/x-red" data-help-name="cluster">
   <p>Cluster Node For Distributed Computing</p>
-   This node takes an input from one to many processes and distributes it across one to many processes.</br>
-   
+   This node module takes an input from one to many processes and distributes it across one to many processes.</br>
+   <h3>Configuration</h3>
+   <dl class="message-properties">
+    <dt>Distribution Strategy
+      <span class="property-type">enumeration</span>
+    </dt>
+    <ul>
+      <li><code>enableOnly</code>, if selected, ...</li>
+      <li><code>randomWorker</code>, if selected, ...</li>
+      <li><code>sendToBingo</code>, if selected, ...</li>
+      <li><code>runOnBingo</code>, If selected, ...</li>
+      <li><code>broadcast</code>, If selected, ...</li>
+      <li><code>roundRobin</code>, If selected, ...</li>
+  </ul>
+  
+    <dt>Transmit Payload Only
+      <span class="property-type">boolean</span>
+    </dt>
+    <dd>enable only</dd>
+  </dl>
    <h3>Outputs</h3>
-       <dl class="message-properties">
-       <dt>payload
-           <span class="property-type">string | buffer</span>
-       </dt>
-       </dl>
+   <p>None</p>
    <h3>Details</h3>
-   <p>By default, Union-Station clusters the underlying Node-RED runtime.</p>
+
    <p>The flows run on the configured number of processors, one process per processor.</p>
    <p>To use parallel processing of tasks (more than one processor per flow),</p>
    <p>this cluster node is available to configure interprocess communication (IPC).</p>
