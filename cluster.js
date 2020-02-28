@@ -209,6 +209,39 @@ const masterInit = (RED, app, settings, server) => {
     });
     return redWorker;
   };
+  /*
+  fs.watchFile(flowPath, debounce(() => {
+
+    let _flows = JSON.parse(fs.readFileSync(flowPath, {
+      encoding: 'utf8'
+    }));
+
+    // REQUIRED for on / off / on 
+    let _wL = Object.keys(cluster.workers).length;
+
+    if (_flows.filter(n => n.type === "cluster").length && _wL < cpus) {
+      forkFunc(cpus - _wL);
+    }
+
+    router({
+      node: {
+        mode: 'loadClusterWorkerFlows'
+      },
+      msg: {
+        user: undefined,
+        deploymentType: 'full',
+        req: {
+          user: undefined,
+          path: '/flows',
+          ip: '127.0.0.1'
+        },
+        flows: {
+          flows: _flows,
+        }
+      }
+    });
+  }, 1000));*/
+
 
   forkFunc(cpus);
 
@@ -256,7 +289,7 @@ const workerInit = (RED, node, settings, nodeOptions) => {
     globalThis.clusteRED.isBingo = globalThis.clusteRED.bingo === process.pid;
   };
   setInterval(() => {
-    globalThis.runtime.flows.getFlows(opts).then((flow) => {
+     globalThis.runtime.flows.getFlows(opts).then((flow) => {
       process.send({
         node: {
           mode: "flowRev"
@@ -273,12 +306,12 @@ const workerInit = (RED, node, settings, nodeOptions) => {
   }, 5000);
   const reloadWorkerFlows = (ipc) => {
     if (!ipc.msg.clusterNodes && !globalThis.clusteRED.isBingo) {
-      globalThis.runtime.stop().then(() => {
+       globalThis.runtime.stop().then(() => {
         RED.server.close();
         process.exit(99);
       });
     }
-    globalThis.runtime.flows.setFlows(opts).then(function (msg) {
+     globalThis.runtime.flows.setFlows(opts).then(function (msg) {
       node.log(`PID ${process.pid} rev: ${msg.rev}`);
     });
 
@@ -383,17 +416,26 @@ for (let pp in require.cache) {
   }
 }
 
+
 function main (RED) {
 
   function ClusterNode(n) {
+
     RED.nodes.createNode(this, n);
+
     let node = this;
+
     if (cluster.isMaster && !node.___clusterized) {
+
       node.___clusterized = true;
+
       masterInit(RED, null, RED.settings);
+
     } else if (cluster.isWorker) {
       workerInit(RED, node, RED.settings, n);
     }
+
+
   }
 
   RED.nodes.registerType("cluster", ClusterNode);
