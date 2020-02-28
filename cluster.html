@@ -17,6 +17,10 @@ ALL RIGHTS RESERVED.
       <input type="checkbox" id="node-input-payloadOnly" placeholder="" style="display: inline-block; width: auto; vertical-align: top;">
       <label for="node-input-payloadOnly" style="width: 70%;"><span>Transmit Payload Only</span></label>
   </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
+    <div style="display: inline-block; width: calc(100% - 105px)"><input type="text" id="node-input-name" data-i18n="[placeholder]common.label.name"></div>
+</div>
 </script>
 <style>
 </style>
@@ -59,64 +63,79 @@ ALL RIGHTS RESERVED.
    * - master:roundRobin
    * - master:broadcast
    */
+  (() => {
 
-  RED.nodes.registerType('cluster', {
-    category: 'advanced',
-    color: "#E9967A",
-    defaults: {
-      mode: {
-        value: "randomWorker"
+    let strategies = {
+      'Enable Clustering': 'enableOnly',
+      'Send to Random Worker': 'randomWorker',
+      'Run On Bingo Process': 'runOnBingo',
+      'Send To Bingo Process': 'sendToBingo',
+      'Broadcast': 'broadcast',
+      'RoundRobin': 'roundRobin'
+    };
+
+    RED.nodes.registerType('cluster', {
+      category: 'unionstation',
+      color: "#E9967A",
+      defaults: {
+        mode: {
+          value: "randomWorker"
+        },
+        /*bingoOnly: {
+          value: true
+        },*/
+        payloadOnly: {
+          value: true
+        }
       },
-      /*bingoOnly: {
-        value: true
-      },*/
-      payloadOnly: {
-        value: true
-      }
-    },
-    icon: "cluster.png",
-    inputs: 1,
-    outputs: 1,
-    outputLabels: function (index) { },
-    label: function () {
-      return `cluster: ${this.mode}`;
-    },
-    labelStyle: function () {
-      return this.name ? "node_label_italic" : "";
-    },
-    oneditprepare: function () {
-      let node = this;
-      node.strategies = ['enableOnly', 'randomWorker', 'sendToBingo', 'runOnBingo', 'broadcast', 'roundRobin'];
-      let setStrategies = (strategies) => {
-        if (strategies) {
-          node.strategies = strategies;
-        }
-        node.strategies.forEach(s => {
-          $('#strategies').append(`
-          <option ${this.mode === s ? 'selected="selected"' : ''} value="${s}">${s}</option>
+      icon: "cluster.png",
+      inputs: 1,
+      outputs: 1,
+      name: null,
+      outputLabels: function (index) { },
+      label: function () {
+
+        let label = Object.entries(strategies).filter(a => a[1] === this.mode)[0][0];
+
+        return this.name || `cluster: ${label}`;
+      },
+      labelStyle: function () {
+        return this.name ? "node_label_italic" : "";
+      },
+      oneditprepare: function () {
+        let node = this;
+        node.strategies = strategies;
+        let setStrategies = (strategies) => {
+          if (strategies) {
+            node.strategies = strategies;
+          }
+          Object.entries(node.strategies).forEach(s => {
+            $('#strategies').append(`
+          <option ${this.mode === s[1] ? 'selected="selected"' : ''} value="${s[1]}">${s[0]}</option>
           `);
-        })
-      };
-      if (!this.strategies) {
-        $.get(window.location.pathname + '6660d4cd-cc89-4f2a-a20b-1ff66353d26b').then(function (strategies) {
-          setStrategies(strategies);
-        });
-      } else {
-        setStrategies();
-      }
-      $("#strategies").val(this.mode);
-      $("#strategies").change(function () {
-        if (this.value === 'enableOnly') {
-          node.inputs = 0;
-          node.outputs = 0;
+          })
+        };
+        if (!this.strategies) {
+          $.get(window.location.pathname + '6660d4cd-cc89-4f2a-a20b-1ff66353d26b').then(function (strategies) {
+            setStrategies(strategies);
+          });
         } else {
-          node.inputs = 1;
-          node.outputs = 1;
+          setStrategies();
         }
-      })
-    },
-    oneditsave: function () {
-      this.mode = $("#strategies").val();
-    }
-  });
+        $("#strategies").val(this.mode);
+        $("#strategies").change(function () {
+          if (this.value === 'enableOnly') {
+            node.inputs = 0;
+            node.outputs = 0;
+          } else {
+            node.inputs = 1;
+            node.outputs = 1;
+          }
+        })
+      },
+      oneditsave: function () {
+        this.mode = $("#strategies").val();
+      }
+    });
+  })()
 </script>

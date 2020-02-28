@@ -209,39 +209,6 @@ const masterInit = (RED, app, settings, server) => {
     });
     return redWorker;
   };
-  /*
-  fs.watchFile(flowPath, debounce(() => {
-
-    let _flows = JSON.parse(fs.readFileSync(flowPath, {
-      encoding: 'utf8'
-    }));
-
-    // REQUIRED for on / off / on 
-    let _wL = Object.keys(cluster.workers).length;
-
-    if (_flows.filter(n => n.type === "cluster").length && _wL < cpus) {
-      forkFunc(cpus - _wL);
-    }
-
-    router({
-      node: {
-        mode: 'loadClusterWorkerFlows'
-      },
-      msg: {
-        user: undefined,
-        deploymentType: 'full',
-        req: {
-          user: undefined,
-          path: '/flows',
-          ip: '127.0.0.1'
-        },
-        flows: {
-          flows: _flows,
-        }
-      }
-    });
-  }, 1000));*/
-
 
   forkFunc(cpus);
 
