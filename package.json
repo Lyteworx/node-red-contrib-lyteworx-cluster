@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-lyteworx-cluster",
-  "version": "0.1.0-alpha.4",
+  "version": "0.1.0-alpha.5",
   "license": "CC-BY-NC-ND-4.0",
   "description": "",
   "main": "cluster.js",
@@ -19,6 +19,11 @@
     "flow",
     "flows",
     "iot",
-    "cluster"
+    "cluster",
+    "roundrobin",
+    "broadcast",
+    "master",
+    "worker",
+    "ipc"
   ]
 }
