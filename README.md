@@ -5,6 +5,11 @@
 
 ## Run Node-RED on all your CPU cores
 
+## License
+
+This node is licensed under the [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License](https://creativecommons.org/licenses/by-nc-nd/4.0/).
+
+For commercial use, please contact info@lyteworx.com
 
 ## Description
 
