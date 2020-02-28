@@ -22,7 +22,11 @@ Most computers, from the smartphone to the enterprise server, have multiple core
 
 ## Basic Concepts
 
-### 
+### Overview
+
+The cluster node auto-detects the runtime environment of the Node-RED instance in which it is running.  Once a single cluster node is added to a flow, on the next `deploy` the node will call the Node.js cluster module.  The process that was originally running the Node-RED instance becomes the `master` process, which spawns multiple `worker` processes.
+
+If all nodes are removed from the active flow, all clustering logic will also be removed, and Node-RED will function as normal.
 
 
 ### Terminology
