@@ -1,8 +1,12 @@
 {
   "name": "node-red-contrib-lyteworx-cluster",
-  "version": "0.1.0-alpha.5",
+  "version": "0.1.0-alpha.6",
   "license": "CC-BY-NC-ND-4.0",
-  "description": "",
+  "description": "A multi-processing cluster node for Node-RED",
+  "repository":{
+    "type":"git",
+    "url":"https://github.com/Lyteworx/node-red-contrib-lyteworx-cluster.git"
+  },
   "main": "cluster.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
