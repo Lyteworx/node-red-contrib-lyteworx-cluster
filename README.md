@@ -1,11 +1,10 @@
-<img src="./readme/logo.jpg" width="300" style="margin-left:auto;margin-right:auto;display:block">
+<img src="./readme/logo.jpg" width="300">
 
-<h1 style="text-align:center">
-node-red-contrib-lyteworx-cluster
-</h1>
-<h2 style="text-align:center">
-Run Node-RED on all your CPU cores
-</h2>
+
+# node-red-contrib-lyteworx-cluster
+
+## Run Node-RED on all your CPU cores
+
 
 ### Description
 
