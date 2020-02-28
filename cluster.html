@@ -1,6 +1,6 @@
 <!--
 
-@license CC BY-NC 3.0 US
+@license CC BY-NC 4.0 US
 Copyright DigitalArsenal.IO, Inc., Lyteworx LLC.
 ALL RIGHTS RESERVED.
  
@@ -9,8 +9,6 @@ ALL RIGHTS RESERVED.
 <script type="text/x-red" data-template-name="cluster">
   <div class="form-row" id="cluster-input-mode">
     <select id="strategies">
-     
-     
     </select>
     <br />
   </div>
@@ -68,7 +66,7 @@ ALL RIGHTS RESERVED.
     icon: "cluster.png",
     inputs: 1,
     outputs: 1,
-    outputLabels: function (index) {},
+    outputLabels: function (index) { },
     label: function () {
       return `cluster: ${this.mode}`;
     },
@@ -77,14 +75,14 @@ ALL RIGHTS RESERVED.
     },
     oneditprepare: function () {
       let node = this;
-      node.strategies = ['randomWorker', 'sendToBingo', 'runOnBingo', 'broadcast', 'roundRobin'];
+      node.strategies = ['enableOnly', 'randomWorker', 'sendToBingo', 'runOnBingo', 'broadcast', 'roundRobin'];
       let setStrategies = (strategies) => {
         if (strategies) {
           node.strategies = strategies;
         }
         node.strategies.forEach(s => {
           $('#strategies').append(`
-          <option ${this.mode === s?'selected="selected"':''} value="${s}">${s}</option>
+          <option ${this.mode === s ? 'selected="selected"' : ''} value="${s}">${s}</option>
           `);
         })
       };
@@ -97,12 +95,14 @@ ALL RIGHTS RESERVED.
       }
       $("#strategies").val(this.mode);
       $("#strategies").change(function () {
-        if (this.value === 'getSpecificWorker') {
-
+        if (this.value === 'enableOnly') {
+          console.log(node)
+          node.inputs = 0;
+          node.outputs = 0;
         } else {
-
+          node.inputs = 1;
+          node.outputs = 1;
         }
-        console.log(this.value)
       })
     },
     oneditsave: function () {
