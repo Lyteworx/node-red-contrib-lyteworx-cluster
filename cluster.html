@@ -107,7 +107,6 @@ ALL RIGHTS RESERVED.
       $("#strategies").val(this.mode);
       $("#strategies").change(function () {
         if (this.value === 'enableOnly') {
-          console.log(node)
           node.inputs = 0;
           node.outputs = 0;
         } else {

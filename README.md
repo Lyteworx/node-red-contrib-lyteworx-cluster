@@ -41,7 +41,7 @@ Most computers, from the smartphone to the enterprise server, have multiple core
 1. **Enable Clustering** - The default mode, which enables clustering (running all flows on all processes)
 
 2. **Send to Random Worker** - Takes a message from the input and sends it to a random worker process. 
-3. **runOnBingo** - Only passes the message to the output **if the current worker is the bingo worker**.  Does not allow the message to continue to if the worker is not the bingo worker.
-4. **Send to Bingo Process** - Takes a message from the input and sends it to the bingo worker.
+3. **Run On Bingo Process** - Only passes the message to the output **if the current worker is the bingo worker**.  Does not allow the message to continue to if the worker is not the bingo worker.
+4. **Send To Bingo Process** - Takes a message from the input and sends it to the bingo worker.
 5. **Broadcast** - Takes the message and sends it to all available workers.
 6. **RoundRobin** - Passes the message to the next worker selected using a round-robin scheduling algorithm. 
