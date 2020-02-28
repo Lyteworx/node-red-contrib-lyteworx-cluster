@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @license CC BY-NC 3.0 US
+ * @license CC-BY-NC-ND-4.0
  * Copyright DigitalArsenal.IO, Inc., Lyteworx LLC.
  * ALL RIGHTS RESERVED.
  **/
