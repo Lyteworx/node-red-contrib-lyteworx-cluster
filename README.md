@@ -16,7 +16,16 @@ Run Node-RED on all your CPU cores
 
 ### Getting Started
 
+### Installing
+
+`npm i node-red-contrib-lyteworx-cluster`
 
 
+### Runtime Modes
 
-
+- enableOnly
+- randomWorker
+- sendToBingo
+- runOnBingo
+- broadcast
+- roundRobin
