@@ -1,11 +1,10 @@
 'use strict';
 
 /**
- * @license CC-BY-NC-ND-4.0
+ * @license CC BY-NC 3.0 US
  * Copyright DigitalArsenal.IO, Inc., Lyteworx LLC.
  * ALL RIGHTS RESERVED.
  **/
-
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
@@ -109,7 +108,7 @@ const flowRev = (ipc, _worker) => {
     currentRev = ipc.msg.rev;
     workers = broadcast();
     workers.ipc = {
-      method: "reloadWorkerFlows",
+      method: 'reloadWorkerFlows',
       msg: {
         ...ipc.msg
       }
@@ -118,15 +117,16 @@ const flowRev = (ipc, _worker) => {
   return workers;
 };
 
-const loadClusterWorkerFlows = function(ipc, _worker) {
+const loadClusterWorkerFlows = function (ipc, _worker) {
   let workers = broadcast(_worker);
   workers.ipc = {
-    method: "reloadWorkerFlows"
+    method: 'reloadWorkerFlows'
   };
   return workers;
 };
 
 const masterInit = (RED, app, settings, server) => {
+
   _RED = RED;
 
   globalThis.clusteRED = {
@@ -155,17 +155,16 @@ const masterInit = (RED, app, settings, server) => {
 
   /**
    * Route a message from a worker to the correct location.
-   *
+   * 
    * @param {Object} ipc - The serialized ipc message
    * @param {string} ipc.node - Node-RED node sending the message
    * @param {string} ipc.msg - Message to send
    * @param {object} worker - The worker that sent the message
    */
 
-  const router = function(ipc, worker) {
+  const router = function (ipc, worker) {
     const f = globalThis.clusteRED.methods[ipc.node.mode];
-    const func =
-      typeof f === "function" ? f : globalThis.clusteRED.methods["broadcast"];
+    const func = typeof f === 'function' ? f : globalThis.clusteRED.methods['broadcast'];
     let workers = func(ipc, worker);
     if (!workers) return null;
     if (ipc && ipc.node && workers) {
@@ -184,30 +183,26 @@ const masterInit = (RED, app, settings, server) => {
     }
   };
 
-  let cpus =
-    settings.cluster && parseInt(settings.cluster.cpus)
-      ? settings.cluster.cpus
-      : require("os").cpus().length;
-
-  let forkFunc = len => {
-    if (Object.keys(cluster.workers).length >= cpus) return;
-    for (let i = 0; i < len; i++) {
-      let cp = _fork();
-    }
-  };
+  let cpus = settings.cluster && parseInt(settings.cluster.cpus) ? settings.cluster.cpus : require('os').cpus().length;
 
   /**
    * Fork a new worker
-   *
+   * 
    * @param {Object} [deadWorker] - The terminated worker that kicked off the fork
    **/
 
-  let _fork = function(deadWorker) {
+  let forkFunc = (len) => {
+    if (Object.keys(cluster.workers).length >= cpus) return;
+    for (let i = 0; i < len; i++) {
+      let cp = _fork();
+    }  };
+
+  let _fork = function (deadWorker) {
     let redWorker = cluster.fork();
-    redWorker.on("message", ipc => {
+    redWorker.on('message', (ipc) => {
       router(ipc, redWorker);
     });
-    redWorker.on("error", _e => {
+    redWorker.on('error', (_e) => {
       try {
         console.log(`IPC error ${_e}`);
       } catch (e) {}
@@ -217,7 +212,7 @@ const masterInit = (RED, app, settings, server) => {
 
   forkFunc(cpus);
 
-  cluster.on("exit", function(worker, code, signal) {
+  cluster.on('exit', function (worker, code, signal) {
     if (code !== 99) {
       _fork();
     }
