@@ -7,52 +7,57 @@ ALL RIGHTS RESERVED.
 -->
 
 <script type="text/x-red" data-template-name="cluster">
-  <div class="form-row" id="cluster-input-mode">
-    <label for="node-config-input-strategy" style="width:50%""><i class="fa fa-th-list"></i> Distribution Strategy</label>
-    <select id="strategies">
-    </select>
-    <br />
-  </div>
+
+
   <div class="form-row">
-      <input type="checkbox" id="node-input-payloadOnly" placeholder="" style="display: inline-block; width: auto; vertical-align: top;">
-      <label for="node-input-payloadOnly" style="width: 70%;"><span>Transmit Payload Only</span></label>
+    <label for="node-input-name" style="width:40%"><i class="fa fa-tag"></i> <span>Name</span></label>
+    <input type="text" id="node-input-name" placeholder="Name"  style="width:50%">
   </div>
+
   <div class="form-row">
-    <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
-    <div style="display: inline-block; width: calc(100% - 105px)"><input type="text" id="node-input-name" data-i18n="[placeholder]common.label.name"></div>
-</div>
+    <label for="node-config-input-strategy" style="width:40%"><i class="fa fa-th-list"></i> <span>Distribution Strategy</span></label>
+    <select id="strategies" style="width:50%"></select>
+  </div>
+
+  <div class="form-row">
+    <input type="checkbox" id="node-input-payloadOnly" style="display: inline-block; width: auto; vertical-align: top;">
+    <label for="node-input-single" style="width: 60%;">Transmit Payload Only</label>
+  </div>
 </script>
 <style>
 </style>
 <script type="text/x-red" data-help-name="cluster">
   <p>Cluster Node For Distributed Computing</p>
-   This node module takes an input from one to many processes and distributes it across one to many processes.</br>
+  The cluster node auto-detects the runtime environment of the Node-RED instance in which it is running. Once a single cluster node is added to a flow, on the next deploy the node will call the Node.js cluster module. The process that was originally running the Node-RED instance becomes the master process, which spawns multiple worker processes.
+
+  If all nodes are removed from the active flow, all clustering logic will also be removed, and Node-RED will function as normal.
+  
+  </br>
    <h3>Configuration</h3>
    <dl class="message-properties">
     <dt>Distribution Strategy
       <span class="property-type">enumeration</span>
     </dt>
     <ul>
-      <li><code>enableOnly</code>, if selected, ...</li>
-      <li><code>randomWorker</code>, if selected, ...</li>
-      <li><code>sendToBingo</code>, if selected, ...</li>
-      <li><code>runOnBingo</code>, If selected, ...</li>
-      <li><code>broadcast</code>, If selected, ...</li>
-      <li><code>roundRobin</code>, If selected, ...</li>
+      <li><b>Enable Clustering</b>, The default mode, which enables clustering (running all flows on all processes)</li>
+      <li><b>Send to Random Worker</b>, Takes a message from the input and sends it to a random worker process.</li>
+      <li><b>Run On Bingo Process</b>,  Only passes the message to the output if the current worker is the bingo worker. Does not allow the message to continue to if the worker is not the bingo worker.</li>
+      <li><b>Send To Bingo Process</b>, Takes a message from the input and sends it to the bingo worker.</li>
+      <li><b>Broadcast</b>, Takes the message and sends it to all available workers.</li>
+      <li><b>RoundRobin</b>, Passes the message to the next worker selected using a round-robin scheduling algorithm.</li>
   </ul>
   
     <dt>Transmit Payload Only
       <span class="property-type">boolean</span>
     </dt>
-    <dd>enable only</dd>
+
   </dl>
    <h3>Outputs</h3>
    <p>None</p>
    <h3>Details</h3>
 
    <p>The flows run on the configured number of processors, one process per processor.</p>
-   <p>To use parallel processing of tasks (more than one processor per flow),</p>
-   <p>this cluster node is available to configure interprocess communication (IPC).</p>
+   <p>To use parallel processing of tasks (more than one processor per flow), this cluster node is available to configure interprocess communication (IPC).</p>
 </script>
 
 <script type="text/javascript">
@@ -78,6 +83,7 @@ ALL RIGHTS RESERVED.
       category: 'unionstation',
       color: "#E9967A",
       defaults: {
+        name: { value: "" },
         mode: {
           value: "randomWorker"
         },
