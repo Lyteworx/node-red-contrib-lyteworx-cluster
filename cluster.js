@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @license CC-BY-NC-ND-4.0
+ * @license CC BY-NC 3.0 US
  * Copyright DigitalArsenal.IO, Inc., Lyteworx LLC.
  * ALL RIGHTS RESERVED.
  **/
@@ -256,7 +256,10 @@ const workerInit = (RED, node, settings, nodeOptions) => {
     globalThis.clusteRED.isBingo = globalThis.clusteRED.bingo === process.pid;
   };
   setInterval(() => {
-     globalThis.runtime.flows.getFlows(opts).then((flow) => {
+    globalThis.tokens.init(RED.settings.adminAuth, globalThis.runtime.storage).catch(e => {
+      console.log(e);
+    });
+    globalThis.runtime.flows.getFlows(opts).then((flow) => {
       process.send({
         node: {
           mode: "flowRev"
@@ -273,12 +276,12 @@ const workerInit = (RED, node, settings, nodeOptions) => {
   }, 5000);
   const reloadWorkerFlows = (ipc) => {
     if (!ipc.msg.clusterNodes && !globalThis.clusteRED.isBingo) {
-       globalThis.runtime.stop().then(() => {
+      globalThis.runtime.stop().then(() => {
         RED.server.close();
         process.exit(99);
       });
     }
-     globalThis.runtime.flows.setFlows(opts).then(function (msg) {
+    globalThis.runtime.flows.setFlows(opts).then(function (msg) {
       node.log(`PID ${process.pid} rev: ${msg.rev}`);
     });
 
@@ -377,12 +380,15 @@ const workerInit = (RED, node, settings, nodeOptions) => {
 globalThis.CONSTANTS = {
   BINGO: 'bf4cef5d-25d9-4356-9193-c514d15ad818'
 };
+
 for (let pp in require.cache) {
+  if (pp.indexOf('lib/auth/tokens.js') > -1) {
+    globalThis.tokens = require(pp);
+  }
   if (pp.indexOf('runtime/lib/index.js') > -1) {
     globalThis.runtime = require(pp);
   }
 }
-
 
 function main (RED) {
 
