@@ -24,14 +24,12 @@ ALL RIGHTS RESERVED.
     <label for="node-input-single" style="width: 60%;">Transmit Payload Only</label>
   </div>
 </script>
-<style>
-</style>
+<style></style>
 <script type="text/x-red" data-help-name="cluster">
   <p>Cluster Node For Distributed Computing</p>
   The cluster node auto-detects the runtime environment of the Node-RED instance in which it is running. Once a single cluster node is added to a flow, on the next deploy the node will call the Node.js cluster module. The process that was originally running the Node-RED instance becomes the master process, which spawns multiple worker processes.
 
   If all nodes are removed from the active flow, all clustering logic will also be removed, and Node-RED will function as normal.
-  
   </br>
    <h3>Configuration</h3>
    <dl class="message-properties">
@@ -46,7 +44,7 @@ ALL RIGHTS RESERVED.
       <li><b>Broadcast</b>, Takes the message and sends it to all available workers.</li>
       <li><b>RoundRobin</b>, Passes the message to the next worker selected using a round-robin scheduling algorithm.</li>
   </ul>
-  
+
     <dt>Transmit Payload Only
       <span class="property-type">boolean</span>
     </dt>
@@ -61,35 +59,24 @@ ALL RIGHTS RESERVED.
 </script>
 
 <script type="text/javascript">
-  /*  
-   * List of strategies
-   * - master:randomWorker
-   * - master:getSpecificWorker
-   * - master:roundRobin
-   * - master:broadcast
-   */
   (() => {
-
     let strategies = {
-      'Enable Clustering': 'enableOnly',
-      'Send to Random Worker': 'randomWorker',
-      'Run On Bingo Process': 'runOnBingo',
-      'Send To Bingo Process': 'sendToBingo',
-      'Broadcast': 'broadcast',
-      'RoundRobin': 'roundRobin'
+      "Enable Cluster Only": "enableOnly",
+      "Send to Random Worker": "randomWorker",
+      "Run On Bingo Process": "runOnBingo",
+      "Send To Bingo Process": "sendToBingo",
+      Broadcast: "broadcast",
+      RoundRobin: "roundRobin"
     };
 
-    RED.nodes.registerType('cluster', {
-      category: 'unionstation',
+    RED.nodes.registerType("cluster", {
+      category: "unionstation",
       color: "#E9967A",
       defaults: {
         name: { value: "" },
         mode: {
           value: "randomWorker"
         },
-        /*bingoOnly: {
-          value: true
-        },*/
         payloadOnly: {
           value: true
         }
@@ -98,50 +85,55 @@ ALL RIGHTS RESERVED.
       inputs: 1,
       outputs: 1,
       name: null,
-      outputLabels: function (index) { },
-      label: function () {
-
-        let label = Object.entries(strategies).filter(a => a[1] === this.mode)[0][0];
+      outputLabels: function(index) {},
+      label: function() {
+        let label = Object.entries(strategies).filter(
+          a => a[1] === this.mode
+        )[0][0];
 
         return this.name || `cluster: ${label}`;
       },
-      labelStyle: function () {
+      labelStyle: function() {
         return this.name ? "node_label_italic" : "";
       },
-      oneditprepare: function () {
+      oneditprepare: function() {
         let node = this;
         node.strategies = strategies;
-        let setStrategies = (strategies) => {
+        let setStrategies = strategies => {
           if (strategies) {
             node.strategies = strategies;
           }
           Object.entries(node.strategies).forEach(s => {
-            $('#strategies').append(`
-          <option ${this.mode === s[1] ? 'selected="selected"' : ''} value="${s[1]}">${s[0]}</option>
+            $("#strategies").append(`
+          <option ${this.mode === s[1] ? 'selected="selected"' : ""} value="${
+              s[1]
+            }">${s[0]}</option>
           `);
-          })
+          });
         };
         if (!this.strategies) {
-          $.get(window.location.pathname + '6660d4cd-cc89-4f2a-a20b-1ff66353d26b').then(function (strategies) {
+          $.get(
+            window.location.pathname + "6660d4cd-cc89-4f2a-a20b-1ff66353d26b"
+          ).then(function(strategies) {
             setStrategies(strategies);
           });
         } else {
           setStrategies();
         }
         $("#strategies").val(this.mode);
-        $("#strategies").change(function () {
-          if (this.value === 'enableOnly') {
+        $("#strategies").change(function() {
+          if (this.value === "enableOnly") {
             node.inputs = 0;
             node.outputs = 0;
           } else {
             node.inputs = 1;
             node.outputs = 1;
           }
-        })
+        });
       },
-      oneditsave: function () {
+      oneditsave: function() {
         this.mode = $("#strategies").val();
       }
     });
-  })()
+  })();
 </script>
