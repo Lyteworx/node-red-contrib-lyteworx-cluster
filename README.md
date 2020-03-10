@@ -1,6 +1,3 @@
-<img src="https://www.lyteworx.com/img/logo.jpg" width="300">
-
-
 # node-red-contrib-lyteworx-cluster
 
 ## Run Node-RED on all your CPU cores
@@ -24,16 +21,14 @@ For commercial use, please contact info@lyteworx.com
 `npm i node-red-contrib-lyteworx-cluster`
 
 
-## Basic Concepts
-
-### Overview
+## Overview
 
 The cluster node auto-detects the runtime environment of the Node-RED instance in which it is running.  Once a single cluster node is added to a flow, on the next `deploy` the node will call the Node.js cluster module.  The process that was originally running the Node-RED instance becomes the `master` process, which spawns multiple `worker` processes.
 
 If all nodes are removed from the active flow, all clustering logic will also be removed, and Node-RED will function as normal.
 
 
-### Terminology
+## Terminology
 
 - **Cluster**: A set of processes running on a single computer instance that can talk to each other using [Inter-Process Communication (IPC)](https://en.wikipedia.org/wiki/Inter-process_communication)
 - **Worker**: A single process in a cluster.
@@ -42,7 +37,7 @@ If all nodes are removed from the active flow, all clustering logic will also be
 - **Broadcast**: Send a message to every worker in the cluster at the same time.
 - **Round Robin**: [Cycle through workers](https://en.wikipedia.org/wiki/Round-robin_scheduling) one at a time, sending a message to the next worker in order.
 
-### 
+ 
 
 ## Runtime Modes
 
