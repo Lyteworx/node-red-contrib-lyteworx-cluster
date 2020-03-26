@@ -85,6 +85,20 @@ function sendToBingo () {
   return [globalThis.clusteRED.bingo];
 }
 
+function noop(){}
+
+var console$1 = global.console ? global.console : {
+  log: noop,
+  info: noop,
+  warn: noop,
+  error: noop,
+  dir: noop,
+  assert: noop,
+  time: noop,
+  timeEnd: noop,
+  trace: noop
+};
+
 let _RED;
 
 const clusterized = (ipc, _worker) => {
@@ -93,7 +107,7 @@ const clusterized = (ipc, _worker) => {
   if (_RED) {
     _RED.server.close();
   }
-  console.info(`stopped Node-RED on Master Process: ${process.pid}`);
+  console$1.info(`stopped Node-RED on Master Process: ${process.pid}`);
   globalThis.clusteRED.redHalted = true;
 };
 
@@ -101,9 +115,6 @@ let currentRev = null;
 
 const flowRev = (ipc, _worker) => {
   let workers = [];
-  if (!currentRev) {
-    currentRev = ipc.msg.rev;
-  }
   if (currentRev !== ipc.msg.rev) {
     currentRev = ipc.msg.rev;
     workers = broadcast();
@@ -204,8 +215,8 @@ const masterInit = (RED, app, settings, server) => {
     });
     redWorker.on('error', (_e) => {
       try {
-        console.log(`IPC error ${_e}`);
-      } catch (e) {}
+        console$1.log(`IPC error ${_e}`);
+      } catch (e) { }
     });
     return redWorker;
   };
@@ -255,10 +266,8 @@ const workerInit = (RED, node, settings, nodeOptions) => {
     globalThis.clusteRED.bingo = ipc.msg[globalThis.CONSTANTS.BINGO];
     globalThis.clusteRED.isBingo = globalThis.clusteRED.bingo === process.pid;
   };
-  setInterval(() => {
-    globalThis.tokens.init(RED.settings.adminAuth, globalThis.runtime.storage).catch(e => {
-      console.log(e);
-    });
+
+  RED.events.on('nodes-stopped', () => {
     globalThis.runtime.flows.getFlows(opts).then((flow) => {
       process.send({
         node: {
@@ -273,7 +282,17 @@ const workerInit = (RED, node, settings, nodeOptions) => {
     }).catch(function (e) {
       console.log(e);
     });
+  });
+
+  setInterval(() => {
+
+    if (RED.settings.adminAuth) {
+      globalThis.tokens.init(RED.settings.adminAuth, globalThis.runtime.storage).catch(e => {
+        console.log(e);
+      });
+    }
   }, 5000);
+
   const reloadWorkerFlows = (ipc) => {
     if (!ipc.msg.clusterNodes && !globalThis.clusteRED.isBingo) {
       globalThis.runtime.stop().then(() => {
